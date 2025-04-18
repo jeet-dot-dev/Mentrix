@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <BookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">EduTest</span>
+              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Mentrix</span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               <Link to="/" className={`inline-flex items-center px-1 pt-1 border-b-2 ${isActive('/') ? 'border-blue-500' : 'border-transparent'} ${isActive('/')}`}>
