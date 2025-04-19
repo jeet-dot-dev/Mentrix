@@ -18,14 +18,8 @@ const Footer = () => {
               Create or join rooms, take tests, and track your progress.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Twitter size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
+              <a href="https://github.com/jeet-dot-dev/Mentrix" className="text-gray-400 hover:text-primary-500 transition-colors">
                 <Github size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Linkedin size={20} />
               </a>
             </div>
           </div>

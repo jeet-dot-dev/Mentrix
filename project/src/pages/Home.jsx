@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
+      <section className="py-10 md:py-20">
         <div className="container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -37,14 +37,14 @@ const Home = () => {
               Create or join virtual rooms, take customized tests, and track your progress with our innovative education platform.
             </p>
             
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/signup">
-                <Button size="lg" icon={<UserPlus size={20} />}>
+            <div className="flex flex-wrap sm:flex-row justify-center gap-4">
+              <Link to="/signup" className='flex justify-center'>
+                <Button className='size-22' icon={<UserPlus size={20} />}>
                   Get Started
                 </Button>
               </Link>
-              <Link to="/test">
-                <Button size="lg" variant="outline" icon={<ArrowRight size={20} />}>
+              <Link to="/test" className='flex justify-center'>
+                <Button className='size-22'variant="outline" icon={<ArrowRight size={20} />}>
                   Try a Test
                 </Button>
               </Link>

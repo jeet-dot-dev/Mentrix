@@ -45,7 +45,7 @@ const Results = () => {
   
   const handleDownload = () => {
     // In a real app, this would generate a PDF report
-    alert('In a production environment, this would download a PDF report of your results.');
+    alert('char chabannni ghore pe ambani mere lawre pe');
   };
   
   return (
