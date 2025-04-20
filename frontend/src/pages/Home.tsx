@@ -59,6 +59,9 @@ const features: Feature[] = [
 ];
 
 const Home = (): JSX.Element => {
+  const handleClick = () => {
+    window.location.href = "http://localhost:5174/";
+  };
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -106,13 +109,14 @@ const Home = (): JSX.Element => {
                   Create your own virtual classroom. Set custom topics, invite students, and manage your educational environment.
                 </p>
                 <Button 
-                  variant="primary" 
-                  className="w-full" 
-                  icon={<ArrowRight size={18} />}
-                  iconPosition="right"
-                >
-                  Create a Room
-                </Button>
+      variant="primary" 
+      className="w-full" 
+      icon={<ArrowRight size={18} />}
+      iconPosition="right"
+      onClick={handleClick}
+    >
+      Join a Room
+    </Button>
               </Card>
             </motion.div>
             
@@ -126,13 +130,14 @@ const Home = (): JSX.Element => {
                   Join an existing room using a room code. Participate in tests, collaborate with peers, and enhance your learning.
                 </p>
                 <Button 
-                  variant="secondary" 
-                  className="w-full" 
-                  icon={<ArrowRight size={18} />}
-                  iconPosition="right"
-                >
-                  Join a Room
-                </Button>
+      variant="primary" 
+      className="w-full" 
+      icon={<ArrowRight size={18} />}
+      iconPosition="right"
+      onClick={handleClick}
+    >
+      Create a Room
+    </Button>
               </Card>
             </motion.div>
           </motion.div>

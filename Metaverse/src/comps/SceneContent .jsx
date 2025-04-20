@@ -8,14 +8,20 @@ import {
 } from "@react-three/drei";
 import { Vector3 } from "three";
 import { Classroom } from "../models/Classroom";
-import { NameTag, ParticleField, PlayerCharacter, UserCharacter, YouTube } from "./EnvironmentComp";
+import {
+  NameTag,
+  ParticleField,
+  PlayerCharacter,
+  UserCharacter,
+  YouTube,
+} from "./EnvironmentComp";
 
 // Scene content component to avoid render issues
-export const SceneContent = ({ 
-  mySeatIndex, 
-  seatPositions, 
-  dayTime, 
-  users, 
+export const SceneContent = ({
+  mySeatIndex,
+  seatPositions,
+  dayTime,
+  users,
   controlsRef,
   directionalLightRef,
   firstPersonView,
@@ -25,21 +31,25 @@ export const SceneContent = ({
   // For debugging
   // console.log("My character in SceneContent:", myCharacter);
   // console.log("Users in SceneContent:", users);
-  
+
   // Convert mySeatPosition array to Vector3 if it exists
   const mySeatPositionVector = useMemo(() => {
     if (mySeatPosition) {
-      return new Vector3(mySeatPosition[0], mySeatPosition[1], mySeatPosition[2]);
+      return new Vector3(
+        mySeatPosition[0],
+        mySeatPosition[1],
+        mySeatPosition[2]
+      );
     }
     return null;
   }, [mySeatPosition]);
-  
+
   return (
     <>
       {/* In first-person view, we use PlayerCharacter with camera, otherwise use OrbitControls */}
       {firstPersonView ? (
         <PlayerCharacter
-          seatPosition={mySeatPosition} 
+          seatPosition={mySeatPosition}
           isActive={true}
           character={myCharacter}
           // Added rotation to face forward (180 degrees)
@@ -56,7 +66,7 @@ export const SceneContent = ({
               position={[
                 seatPositions[mySeatIndex].position[0],
                 seatPositions[mySeatIndex].position[1] + 2,
-                seatPositions[mySeatIndex].position[2] + 2
+                seatPositions[mySeatIndex].position[2] + 2,
               ]}
               rotation={[0, 0, 0]}
               fov={75}
@@ -125,58 +135,67 @@ export const SceneContent = ({
         {dayTime && <ParticleField />}
 
         {/* YouTube video display - positioned on the classroom blackboard */}
-        <axesHelper args={[5]} />
-        <YouTube 
-          videoId="dQw4w9WgXcQ" // Replace with your desired YouTube video ID
-          position={[-50, 2, -7.5]} // X: center, Y: height of blackboard, Z: back wall
-          rotation={[Math.PI*2, -Math.PI/2, 0]} // Facing the classroom
-          scale={[0.2,0.3,0.2]} // Adjusted scale to fit the blackboard
+        {/* <axesHelper args={[5]} /> */}
+        {/* YouTube video display - positioned on the classroom blackboard */}
+        <YouTube
+          videoId="yr3-_to2BKA"
+          position={[-1, 1.5, -7.45]}
+          rotation={[0, 0, 0]}
+          scale={[0.5, 0.5, 0.5]}
         />
 
         {/* Render all users in their seats */}
-        {users.map(
-          (user) => {
-            if (user && user.seatIndex !== undefined && 
-                seatPositions[user.seatIndex] && 
-                user.seatIndex !== mySeatIndex) {
-              
-              // Calculate distance between positions manually for visibility check
-              let visible = !firstPersonView;
-              
-              if (firstPersonView && mySeatPositionVector && seatPositions[user.seatIndex]) {
-                const userPos = seatPositions[user.seatIndex].position;
-                const userVector = new Vector3(userPos[0], userPos[1], userPos[2]);
-                const distance = mySeatPositionVector.distanceTo(userVector);
-                visible = distance < 10;
-              }
-              
-              return (
-                <group key={user.id || `user-${user.seatIndex}`}>
-                  <UserCharacter
-                    user={user}
-                    position={seatPositions[user.seatIndex].position}
-                    rotation={seatPositions[user.seatIndex].rotation}
-                  />
-                  <NameTag
-                    // Adjusted name tag to be slightly above the character's head
-                    position={[
-                      seatPositions[user.seatIndex].position[0],
-                      seatPositions[user.seatIndex].position[1] + 2, // Raised higher
-                      seatPositions[user.seatIndex].position[2]
-                    ]}
-                    name={user.name || `User ${user.seatIndex + 1}`}
-                    // Added scale to make name tags more readable
-                    scale={0.75}
-                    // Added visible prop that can be controlled
-                    visible={visible}
-                  />
-                </group>
+        {users.map((user) => {
+          if (
+            user &&
+            user.seatIndex !== undefined &&
+            seatPositions[user.seatIndex] &&
+            user.seatIndex !== mySeatIndex
+          ) {
+            // Calculate distance between positions manually for visibility check
+            let visible = !firstPersonView;
+
+            if (
+              firstPersonView &&
+              mySeatPositionVector &&
+              seatPositions[user.seatIndex]
+            ) {
+              const userPos = seatPositions[user.seatIndex].position;
+              const userVector = new Vector3(
+                userPos[0],
+                userPos[1],
+                userPos[2]
               );
+              const distance = mySeatPositionVector.distanceTo(userVector);
+              visible = distance < 10;
             }
-            return null;
+
+            return (
+              <group key={user.id || `user-${user.seatIndex}`}>
+                <UserCharacter
+                  user={user}
+                  position={seatPositions[user.seatIndex].position}
+                  rotation={seatPositions[user.seatIndex].rotation}
+                />
+                <NameTag
+                  // Adjusted name tag to be slightly above the character's head
+                  position={[
+                    seatPositions[user.seatIndex].position[0],
+                    seatPositions[user.seatIndex].position[1] + 2, // Raised higher
+                    seatPositions[user.seatIndex].position[2],
+                  ]}
+                  name={user.name || `User ${user.seatIndex + 1}`}
+                  // Added scale to make name tags more readable
+                  scale={0.75}
+                  // Added visible prop that can be controlled
+                  visible={visible}
+                />
+              </group>
+            );
           }
-        )}
-        
+          return null;
+        })}
+
         {/* Render the current user only in third-person view */}
         {!firstPersonView && mySeatIndex >= 0 && seatPositions[mySeatIndex] && (
           <group>
@@ -190,7 +209,7 @@ export const SceneContent = ({
               position={[
                 seatPositions[mySeatIndex].position[0],
                 seatPositions[mySeatIndex].position[1] + 2, // Raised higher
-                seatPositions[mySeatIndex].position[2]
+                seatPositions[mySeatIndex].position[2],
               ]}
               name="You"
               scale={0.75}
