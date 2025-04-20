@@ -8,7 +8,7 @@ import {
 } from "@react-three/drei";
 import { Vector3 } from "three";
 import { Classroom } from "../models/Classroom";
-import { NameTag, ParticleField, PlayerCharacter, UserCharacter } from "./EnvironmentComp";
+import { NameTag, ParticleField, PlayerCharacter, UserCharacter, YouTube } from "./EnvironmentComp";
 
 // Scene content component to avoid render issues
 export const SceneContent = ({ 
@@ -123,6 +123,15 @@ export const SceneContent = ({
 
         {/* Ambient particles */}
         {dayTime && <ParticleField />}
+
+        {/* YouTube video display - positioned on the classroom blackboard */}
+        <axesHelper args={[5]} />
+        <YouTube 
+          videoId="dQw4w9WgXcQ" // Replace with your desired YouTube video ID
+          position={[-50, 2, -7.5]} // X: center, Y: height of blackboard, Z: back wall
+          rotation={[Math.PI*2, -Math.PI/2, 0]} // Facing the classroom
+          scale={[0.2,0.3,0.2]} // Adjusted scale to fit the blackboard
+        />
 
         {/* Render all users in their seats */}
         {users.map(
