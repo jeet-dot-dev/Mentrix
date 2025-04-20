@@ -1,38 +1,45 @@
-import React, { useRef, useEffect } from 'react';
-import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
 import { Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 
-const YouTube = ({ videoId, position = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1] }) => {
+export const YouTube = ({ videoId = "yr3-_to2BKA", position = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1] }) => {
   const meshRef = useRef();
   
-  // Optional: Add some animation to the plane
+  // Subtle floating animation
   useFrame((state) => {
-    // Subtle floating animation
     if (meshRef.current) {
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.3) * 0.01;
     }
   });
 
   return (
     <group position={position} rotation={rotation} scale={scale}>
-      {/* 3D plane to display the video */}
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <planeGeometry args={[16, 9]} /> {/* 16:9 aspect ratio */}
-        <meshStandardMaterial color="#000000" />
+      {/* Video frame with border */}
+      <mesh position={[0, 0, -0.05]} castShadow receiveShadow>
+        <boxGeometry args={[16.4, 9.4, 0.1]} />
+        <meshStandardMaterial color="#333333" />
       </mesh>
       
-      {/* YouTube iframe positioned on the plane */}
+      {/* Video screen */}
+      <mesh ref={meshRef} castShadow receiveShadow>
+        <planeGeometry args={[16, 9]} />
+        <meshStandardMaterial color="#000000" emissive="#222222" emissiveIntensity={0.2} />
+      </mesh>
+      
+      {/* YouTube iframe */}
       <Html
         transform
-        position={[0, 0, 0.01]} // Slightly in front of the plane
-        rotation={[0, 0, 0]}
-        scale={[16, 9, 1]}
+        position={[0, 0, 0.02]}
+        scale={0.0625}
+        occlude
         style={{
-          width: '100%',
-          height: '100%',
+          width: '1600px',
+          height: '900px',
           pointerEvents: 'auto',
-          transform: 'translate(-50%, -50%)',
+          border: 'none',
+          borderRadius: '4px',
+          overflow: 'hidden',
+          boxShadow: '0 0 10px rgba(0,0,0,0.5)'
         }}
       >
         <iframe
@@ -48,5 +55,3 @@ const YouTube = ({ videoId, position = [0, 0, 0], rotation = [0, 0, 0], scale = 
     </group>
   );
 };
-
-export default YouTube; 

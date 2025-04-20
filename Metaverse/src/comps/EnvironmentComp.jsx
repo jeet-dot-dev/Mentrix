@@ -18,7 +18,7 @@ import { Student2 } from "../models/Student2";
 import { Student3 } from "../models/Student3";
 import { SceneContent } from "./SceneContent ";
 import {  useFrame } from "@react-three/fiber";
-import YouTube from "./YouTube";
+import {YouTube} from "./YouTube";
 
 // Floating name tags above users
 const NameTag = ({ position, name }) => {

@@ -1,62 +1,176 @@
-<h1 align="center">Mentrix</h1>
+# Merntix
+Merntix is a futuristic Metaverse Classroom platform where users can create and join immersive 3D rooms for collaborative learning experiences. Designed for the next generation of education.
 
-<p>Mentrix is a metaverse education platform that transforms traditional classroom learning into an interactive 3D virtual experience, allowing students to connect and study together in virtual classrooms.</p>
+## What Problems Does It Solve
 
-<h2>Overview</h2>
-<p>Mentrix aims to solve the limitations of physical classroom education by creating an immersive virtual learning environment. Students can join virtual classrooms, interact with peers, and participate in group study sessions, all within a 3D space.</p>
+- **Immersive Learning Environment**: Transforms traditional online education into an engaging 3D experience, increasing student attention and participation
+- **Experiential Education**: Allows students to experience the future of education through virtual classroom interactions
+- **Interactive Assessment**: Provides a dynamic environment for mock tests and assessments that surpass traditional online quiz formats
+- **Distance Learning Barriers**: Breaks down geographical barriers while maintaining a sense of physical presence and community
+- **Student Engagement**: Combats online learning fatigue through gamified educational experiences
 
-<h2>Features</h2>
-<ul>
-  <li><b>Virtual Classrooms</b>: Create or join 3D virtual classrooms for interactive learning experiences</li>
-  <li><b>Room Sharing</b>: Share unique room codes to invite friends and classmates to your virtual study space</li>
-  <li><b>Group Study</b>: Collaborate with peers in real-time virtual environments</li>
-  <li><b>Mock Tests</b>: Practice with mock exams to prepare for actual assessments</li>
-  <li><b>Immersive Learning</b>: Experience education in a metaverse environment designed to enhance engagement</li>
-</ul>
+## Project Structure
 
-<h2>Technologies Used</h2>
-<ul>
-  <li><b>Frontend</b>: React</li>
-  <li><b>Backend</b>: Express.js</li>
-  <li><b>AI Integration</b>: Claude</li>
-  <li><b>3D Virtual Environment</b>: Metaverse technologies</li>
-</ul>
+```
+Merntix/
+├── .git/                    # Git repository
+├── .gitignore               # Git ignore file
+├── README.md                # Project documentation
+├── backend/                 # Backend API (TypeScript)
+│   ├── dist/                # Compiled TypeScript output
+│   ├── node_modules/        # Backend dependencies
+│   ├── src/                 # Backend source code
+│   │   ├── config/          # Configuration files
+│   │   ├── controller/      # API controllers
+│   │   ├── routes/          # API routes
+│   │   ├── app.ts           # Express application setup
+│   │   └── index.ts         # Entry point
+│   ├── .env                 # Environment variables
+│   ├── package.json         # Backend dependencies and scripts
+│   ├── package-lock.json    # Dependency lock file
+│   └── tsconfig.json        # TypeScript configuration
+├── frontend/                # Frontend application (TypeScript + React)
+│   ├── node_modules/        # Frontend dependencies
+│   ├── public/              # Static assets
+│   ├── src/                 # Frontend source code
+│   │   ├── components/      # Reusable UI components
+│   │   ├── config/          # Configuration files
+│   │   ├── layouts/         # Page layouts
+│   │   ├── pages/           # Page components
+│   │   ├── services/        # API services
+│   │   ├── types/           # TypeScript type definitions
+│   │   ├── App.tsx          # Main application component
+│   │   ├── index.css        # Global styles
+│   │   ├── main.tsx         # Application entry point
+│   │   └── vite-env.d.ts    # Vite environment types
+│   ├── .gitignore           # Git ignore file
+│   ├── eslint.config.js     # ESLint configuration
+│   ├── index.html           # HTML entry point
+│   ├── package.json         # Frontend dependencies and scripts
+│   ├── package-lock.json    # Dependency lock file
+│   ├── postcss.config.js    # PostCSS configuration
+│   ├── tailwind.config.js   # Tailwind CSS configuration
+│   ├── tsconfig.app.json    # TypeScript app configuration
+│   ├── tsconfig.json        # TypeScript configuration
+│   ├── tsconfig.node.json   # TypeScript node configuration
+│   └── vite.config.ts       # Vite configuration
+├── Metaverse/               # 3D Metaverse application (React)
+│   ├── node_modules/        # Metaverse dependencies
+│   ├── public/              # Static assets
+│   ├── src/                 # Metaverse source code
+│   │   ├── assets/          # Images, textures, and other media
+│   │   ├── comps/           # React components
+│   │   │   ├── EnvironmentComp.jsx  # Main 3D environment component
+│   │   │   ├── Home.jsx             # Home page component
+│   │   │   ├── Room.jsx             # Room component
+│   │   │   ├── SceneContent .jsx    # Scene content component
+│   │   │   └── YouTube.jsx          # YouTube video display component
+│   │   ├── models/          # 3D models and character components
+│   │   │   ├── Classroom.jsx    # Classroom model
+│   │   │   ├── Sir.jsx          # Teacher model
+│   │   │   ├── Student1.jsx     # Student character model 1
+│   │   │   ├── Student2.jsx     # Student character model 2
+│   │   │   └── Student3.jsx     # Student character model 3
+│   │   ├── utils/           # Utility functions
+│   │   │   ├── roomUtils.js     # Room-related utilities
+│   │   │   └── socketUtils.js   # Socket.io utilities
+│   │   ├── App.css          # Main application styles
+│   │   ├── App.jsx          # Main application component
+│   │   ├── index.css        # Global styles
+│   │   └── main.jsx         # Application entry point
+│   ├── .gitignore           # Git ignore file
+│   ├── eslint.config.js     # ESLint configuration
+│   ├── index.html           # HTML entry point
+│   ├── package.json         # Metaverse dependencies and scripts
+│   ├── package-lock.json    # Dependency lock file
+│   └── vite.config.js       # Vite configuration
+└── server/                  # Socket.io server (Node.js)
+    ├── node_modules/        # Server dependencies
+    ├── package.json         # Server dependencies and scripts
+    ├── package-lock.json    # Dependency lock file
+    └── server.js            # Socket.io server implementation
+```
 
-<h2>Installation</h2>
-<p>Follow these steps to get Mentrix running on your local machine:</p>
-<ol>
-  <li>Clone the repository</li>
-  <li>Install dependencies:</li>
-</ol>
+## Features
 
-<pre><code>npm install</code></pre>
+- 3D virtual classroom environment
+- Real-time multiplayer interaction via Socket.io
+- First-person and third-person camera views
+- YouTube video integration for educational content
+- Character customization
+- Day/night cycle
+- RESTful API for user management and room creation
 
-<ol start="3">
-  <li>Start the development server:</li>
-</ol>
+## Challenges We Ran Into
 
-<pre><code>npm run dev</code></pre>
+- **3D Development Learning Curve**: Three.js presented a significant learning curve for our team, with seemingly simple operations like object rotation requiring extensive research and trial-and-error
+- **Performance Optimization**: Balancing visual fidelity with performance across different devices proved challenging
+- **Feature Scope Management**: We initially planned advanced features like WebRTC video calling and AI-powered teaching assistants, but had to scale back to focus on core functionality
+- **Character Animation**: Implementing realistic sitting postures and basic animations required complex rigging and transformation work
+- **Real-time Synchronization**: Ensuring consistent experiences across all users in the same virtual space required careful implementation of socket events
 
-<h2>Usage</h2>
+## Getting Started
 
-<h3>Creating a Virtual Classroom</h3>
-<ol>
-  <li>Log into your Mentrix account</li>
-  <li>Select "Create Room" option</li>
-  <li>Customize your virtual classroom settings</li>
-  <li>Share the unique room code with students you want to invite</li>
-</ol>
+### Backend Setup
+1. Navigate to the backend directory:
+   ```
+   cd backend
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-<h3>Joining a Virtual Classroom</h3>
-<ol>
-  <li>Log into your Mentrix account</li>
-  <li>Select "Join Room" option</li>
-  <li>Enter the unique room code provided by the room creator</li>
-  <li>Join the virtual classroom and begin collaborating</li>
-</ol>
+### Frontend Setup
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-<h2>Target Audience</h2>
-<p>Mentrix is designed for students who want a more engaging, flexible, and collaborative learning experience beyond traditional physical classrooms.</p>
+### Metaverse Setup
+1. Navigate to the Metaverse directory:
+   ```
+   cd Metaverse
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-<h2>Support</h2>
-<p>For issues, questions, or feedback, please open an issue in the repository or contact our support team.</p>
+### Socket.io Server Setup
+1. Navigate to the server directory:
+   ```
+   cd server
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the server:
+   ```
+   node server.js
+   ```
+
+## Technologies Used
+
+- **Frontend**: React, TypeScript, Tailwind CSS, Vite
+- **Backend**: Node.js, Express, TypeScript
+- **Metaverse**: React, Three.js, React Three Fiber
+- **Real-time Communication**: Socket.io
+- **Database**: MongoDB (via backend)
