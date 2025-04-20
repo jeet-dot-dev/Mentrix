@@ -23,7 +23,6 @@ export const generateQuestions = async (
       syllabus: topic,
       questionCount
     });
-    
     return response.data.questions;
   } catch (error) {
     console.error('Error generating questions:', error);

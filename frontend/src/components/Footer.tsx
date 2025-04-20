@@ -1,6 +1,3 @@
-import { GraduationCap, Github, Twitter, Linkedin } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
 const Footer = (): JSX.Element => {
   const currentYear = new Date().getFullYear();
   
