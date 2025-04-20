@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, Variants } from 'framer-motion';
-import { UserPlus, Users, ArrowRight, BookOpen, Clock, BarChart3, Globe, Shield, LucideIcon } from 'lucide-react';
+import { UserPlus, Users, ArrowRight, BookOpen, Clock, BarChart3, Globe, Shield } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 
