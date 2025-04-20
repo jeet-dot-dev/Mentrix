@@ -6,7 +6,6 @@ const client = new Anthropic({
     apiKey: ANTHROPIC_API,
 });
 
-// Update the function signature to match Express middleware pattern
 const genQuestion = async (
     req: Request, 
     res: Response, 
@@ -22,22 +21,37 @@ const genQuestion = async (
     }
 
     try {
-        // Create a dynamic system prompt that includes syllabus information if provided
-        let systemPrompt = "You are an expert exam creator. Generate well-structured multiple choice questions with 4 options each. Include the correct answer marked clearly at the end. Format your response ONLY as a valid JSON array with no explanation text before or after. Each question object should have: 'question' (string), 'options' (array of 4 strings), and 'correctAnswer' (integer 0-3).";
+        // Improved system prompt for better JSON formatting
+        let systemPrompt = `You are an expert exam creator. Your task is to generate multiple choice questions in a specific JSON format. Each question must have exactly 4 options.
+
+Format your response as a valid JSON array of question objects. Each object must have:
+- "question": string (the question text)
+- "options": array of exactly 4 strings (the possible answers)
+- "correctAnswer": number (0-3, indicating the index of the correct answer)
+
+Example format:
+[
+  {
+    "question": "What is 2+2?",
+    "options": ["3", "4", "5", "6"],
+    "correctAnswer": 1
+  }
+]
+
+Do not include any text before or after the JSON array. Ensure all JSON is properly formatted with no unterminated strings.`;
         
-        // Build user prompt with syllabus content if available
-        let userPrompt = `Create ${questionCount} challenging multiple choice questions on the subject of ${subject}.`;
+        let userPrompt = `Generate ${questionCount} challenging multiple choice questions about ${subject}.`;
         
         if (syllabus) {
-            systemPrompt += " Make sure all questions are based on the provided syllabus content.";
-            userPrompt += ` Focus specifically on the following syllabus topics: ${syllabus}`;
+            userPrompt += ` Focus on these specific topics: ${syllabus}.`;
         }
         
-        userPrompt += ` Each question should have exactly 4 options (A, B, C, D) with only one correct answer. Format the output ONLY as a JSON array with no additional text before or after. Each question object should have: "question", "options" (array of 4 strings), and "correctAnswer" (index 0-3).`;
+        userPrompt += ` Return ONLY a valid JSON array of question objects with no additional text.`;
 
         const response = await client.messages.create({
-            model: "claude-3-7-sonnet-latest",
-            max_tokens: 1000,
+            model: "claude-3-5-sonnet-latest",
+            max_tokens: 4000,
+            temperature: 0.7,
             system: systemPrompt,
             messages: [
                 {
@@ -49,19 +63,38 @@ const genQuestion = async (
         
         let contentText = '';
         if (response?.content?.[0]?.type === 'text') {
-            contentText = response.content[0].text;
+            contentText = response.content[0].text.trim();
+        }
+
+        // Ensure the response starts with [ and ends with ]
+        if (!contentText.startsWith('[') || !contentText.endsWith(']')) {
+            throw new Error('Response is not a valid JSON array');
         }
 
         let questions;
         try {
             questions = JSON.parse(contentText);
+            
+            // Validate the questions array
             if (!Array.isArray(questions)) {
-                throw new Error('Parsed content is not a valid JSON array');
+                throw new Error('Parsed content is not an array');
             }
+
+            // Validate each question object
+            questions.forEach((q, index) => {
+                if (!q.question || !Array.isArray(q.options) || 
+                    q.options.length !== 4 || typeof q.correctAnswer !== 'number' ||
+                    q.correctAnswer < 0 || q.correctAnswer > 3) {
+                    throw new Error(`Invalid question format at index ${index}`);
+                }
+            });
+
         } catch (error) {
+            console.error('JSON Parse Error:', error);
+            console.error('Raw Content:', contentText);
             res.status(500).json({
                 msg: 'Failed to parse response from Claude',
-                error: error instanceof Error ? error.message : 'Server error',
+                error: error instanceof Error ? error.message : 'Invalid response format',
             });
             return;
         }
@@ -70,6 +103,7 @@ const genQuestion = async (
             questions,
         });
     } catch (error) {
+        console.error('Generation Error:', error);
         res.status(500).json({
             msg: 'Error generating questions',
             error: error instanceof Error ? error.message : 'Server error',
