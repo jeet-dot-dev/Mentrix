@@ -1,38 +1,50 @@
 // src/comps/Room.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import EnvironmentComp from './EnvironmentComp';
 import { initializeSocket } from '../utils/socketUtils';
 
-// Predefined seating positions in the classroom
 const SEAT_POSITIONS = [
-  { position: [-2.5, 0.5, -1.5], rotation: [0, Math.PI, 0] },
-  { position: [-1.5, 0.5, -1.5], rotation: [0, Math.PI, 0] },
-  { position: [-0.5, 0.5, -1.5], rotation: [0, Math.PI, 0] },
-  { position: [0.5, 0.5, -1.5], rotation: [0, Math.PI, 0] },
-  { position: [-2.5, 0.5, -0.5], rotation: [0, Math.PI, 0] },
-  { position: [-1.5, 0.5, -0.5], rotation: [0, Math.PI, 0] },
-  { position: [-0.5, 0.5, -0.5], rotation: [0, Math.PI, 0] },
-  { position: [0.5, 0.5, -0.5], rotation: [0, Math.PI, 0] },
-  // Add more seat positions as needed
+  { position: [-0.8, 0.2, 1.9], rotation: [0, -Math.PI / 2, 0] },
+  { position: [-0.8, 0.2, -1.8], rotation: [0, -Math.PI / 2, 0] },
+  { position: [-0.8, 0.2, 0], rotation: [0, -Math.PI / 2, 0] },
 ];
 
 function Room() {
   const { roomId } = useParams();
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState(null);
   const [mySeatIndex, setMySeatIndex] = useState(-1);
+  const [userName, setUserName] = useState('');
+  const [character, setCharacter] = useState('');
 
   useEffect(() => {
+    // Redirect if state is missing (user refreshes or comes directly)
+    if (!state?.userName || !state?.character) {
+      navigate('/');
+      return;
+    }
+
+    setUserName(state.userName);
+    setCharacter(state.character);
+
     const newSocket = initializeSocket(roomId);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
       setConnected(true);
       console.log('Connected to the room:', roomId);
-      
-      // Request a seat assignment from the server
+
+      // Send user info to server
+      newSocket.emit('joinRoom', {
+        name: state.userName,
+        character: state.character,
+      });
+
       newSocket.emit('requestSeat');
     });
 
@@ -46,30 +58,29 @@ function Room() {
       setUsers(updatedUsers);
     });
 
-    // Clean up on unmount
     return () => {
       if (newSocket) {
         newSocket.disconnect();
       }
     };
-  }, [roomId]);
+  }, [roomId, state, navigate]);
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
-      {/* Room info overlay - positioned absolutely on top */}
       <div className="absolute top-0 left-0 z-10 p-2 w-full pointer-events-none">
         <div className="bg-gray-800 bg-opacity-75 text-white p-2 rounded-md text-sm">
           <p>Room: {roomId}</p>
           <p>Status: {connected ? 'Connected' : 'Connecting...'}</p>
           <p>Users in room: {users.length}</p>
+          {userName && <p>Name: {userName}</p>}
+          {character && <p>Character: {character}</p>}
           {mySeatIndex >= 0 && <p>Your seat: #{mySeatIndex + 1}</p>}
         </div>
       </div>
-      
-      {/* Classroom environment - takes full viewport */}
+
       <div className="w-full h-full">
-        <EnvironmentComp 
-          users={users} 
+        <EnvironmentComp
+          users={users}
           socket={socket}
           mySeatIndex={mySeatIndex}
           seatPositions={SEAT_POSITIONS}

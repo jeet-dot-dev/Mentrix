@@ -1,21 +1,50 @@
-// src/comps/Home.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateRoomCode } from '../utils/roomUtils';
 
 function Home() {
   const [joinCode, setJoinCode] = useState('');
+  const [name, setName] = useState('');
+  const [selectedCharacter, setSelectedCharacter] = useState('');
   const navigate = useNavigate();
 
+  const characters = [
+    { id: 'character1', name: 'Student1', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231245_tj1brw.png' },
+    { id: 'character2', name: 'Student2', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231152_s1kt1t.png' },
+    { id: 'character3', name: 'Student3', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231226_zh9ysk.png' },
+  ];
+
   const handleCreateRoom = () => {
+    if (!name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+    if (!selectedCharacter) {
+      alert('Please select a character');
+      return;
+    }
+    
     const roomCode = generateRoomCode();
-    navigate(`/room/${roomCode}`);
+    navigate(`/room/${roomCode}`, { 
+      state: { userName: name, character: selectedCharacter } 
+    });
   };
 
   const handleJoinRoom = (e) => {
     e.preventDefault();
+    if (!name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+    if (!selectedCharacter) {
+      alert('Please select a character');
+      return;
+    }
+    
     if (joinCode.trim()) {
-      navigate(`/room/${joinCode}`);
+      navigate(`/room/${joinCode}`, { 
+        state: { userName: name, character: selectedCharacter } 
+      });
     }
   };
 
@@ -27,6 +56,49 @@ function Home() {
         </h1>
         
         <div className="space-y-6">
+          {/* Name Input */}
+          <div className="space-y-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Your Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              required
+            />
+          </div>
+          
+          {/* Character Selection */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Choose Character
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {characters.map((character) => (
+                <div
+                  key={character.id}
+                  onClick={() => setSelectedCharacter(character.id)}
+                  className={`cursor-pointer border rounded-lg p-2 flex flex-col items-center justify-center transition ${
+                    selectedCharacter === character.id
+                      ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500'
+                      : 'border-gray-200 hover:border-indigo-300'
+                  }`}
+                >
+                  <img
+                    src={character.image}
+                    alt={character.name}
+                    className="w-16 h-16 rounded-full mb-2"
+                  />
+                  <span className="text-sm font-medium">{character.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
           <button 
             onClick={handleCreateRoom} 
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition duration-200 shadow-md"

@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -20,6 +19,8 @@ const rooms = {};
 io.on('connection', (socket) => {
   const { roomId } = socket.handshake.query;
   
+  if (!roomId) return; // safety
+  
   // Create room if it doesn't exist
   if (!rooms[roomId]) {
     rooms[roomId] = {
@@ -28,63 +29,65 @@ io.on('connection', (socket) => {
     };
   }
   
-  // Add user to the room (without seat assignment initially)
+  // Add user with basic info (seat, name, character to be filled later)
   rooms[roomId].users[socket.id] = {
     id: socket.id,
     cameraRotation: { x: 0, y: 0 }
   };
   
-  // Join the socket room
   socket.join(roomId);
   
-  // Handle seat assignment request
+  // Handle joinRoom: attach name and character
+  socket.on('joinRoom', ({ name, character }) => {
+    if (rooms[roomId]?.users[socket.id]) {
+      rooms[roomId].users[socket.id].name = name;
+      rooms[roomId].users[socket.id].character = character;
+      
+      // Immediately update all users after character selection
+      const usersInRoom = Object.values(rooms[roomId].users);
+      io.in(roomId).emit('updateUsers', usersInRoom);
+    }
+  });
+  
+  // Handle seat assignment
   socket.on('requestSeat', () => {
-    const availableSeats = Array.from({ length: 20 }, (_, i) => i)  // Assuming max 20 seats
+    const availableSeats = Array.from({ length: 20 }, (_, i) => i)
       .filter(seatIndex => !rooms[roomId].takenSeats.includes(seatIndex));
     
     if (availableSeats.length > 0) {
-      // Assign first available seat
       const assignedSeat = availableSeats[0];
       rooms[roomId].takenSeats.push(assignedSeat);
       rooms[roomId].users[socket.id].seatIndex = assignedSeat;
       
-      // Tell the user which seat they got
       socket.emit('seatAssigned', { seatIndex: assignedSeat });
       
-      // Update all users about the new seating arrangement
       const usersInRoom = Object.values(rooms[roomId].users);
       io.in(roomId).emit('updateUsers', usersInRoom);
     } else {
-      // Room is full
       socket.emit('roomFull');
     }
   });
   
   // Handle camera rotation updates
   socket.on('cameraUpdate', (data) => {
-    if (rooms[roomId] && rooms[roomId].users[socket.id]) {
+    if (rooms[roomId]?.users[socket.id]) {
       rooms[roomId].users[socket.id].cameraRotation = data.rotation;
-      // You could broadcast this to other users if you want to show head movement
     }
   });
   
   // Handle disconnection
   socket.on('disconnect', () => {
-    if (rooms[roomId] && rooms[roomId].users[socket.id]) {
-      // Free up the seat
+    if (rooms[roomId]?.users[socket.id]) {
       const seatIndex = rooms[roomId].users[socket.id].seatIndex;
       if (seatIndex !== undefined) {
         rooms[roomId].takenSeats = rooms[roomId].takenSeats.filter(seat => seat !== seatIndex);
       }
       
-      // Remove user
       delete rooms[roomId].users[socket.id];
       
-      // Update other users
       const usersInRoom = Object.values(rooms[roomId].users);
       io.in(roomId).emit('updateUsers', usersInRoom);
       
-      // Clean up empty rooms
       if (Object.keys(rooms[roomId].users).length === 0) {
         delete rooms[roomId];
       }
