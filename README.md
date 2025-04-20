@@ -94,20 +94,35 @@ Merntix/
 ## Features
 
 - 3D virtual classroom environment
-- Real-time multiplayer interaction via Socket.io
 - First-person and third-person camera views
 - YouTube video integration for educational content
 - Character customization
 - Day/night cycle
 - RESTful API for user management and room creation
 
-## Challenges We Ran Into
 
-- **3D Development Learning Curve**: Three.js presented a significant learning curve for our team, with seemingly simple operations like object rotation requiring extensive research and trial-and-error
-- **Performance Optimization**: Balancing visual fidelity with performance across different devices proved challenging
-- **Feature Scope Management**: We initially planned advanced features like WebRTC video calling and AI-powered teaching assistants, but had to scale back to focus on core functionality
-- **Character Animation**: Implementing realistic sitting postures and basic animations required complex rigging and transformation work
-- **Real-time Synchronization**: Ensuring consistent experiences across all users in the same virtual space required careful implementation of socket events
+## 🚧 Challenges We Ran Into
+
+- **First Time with Three.js & React Integration**  
+  This was our first time exploring Three.js. We started by watching a few YouTube tutorials and then moved on to the official documentation. While we were able to grasp basic concepts, integrating Three.js into a React environment using `@react-three/fiber` turned out to be much more complex than expected. Managing components, reactivity, and scene updates required a lot of trial and error.
+
+- **Finding the Right 3D Character & Classroom Model**  
+  Choosing suitable 3D assets was another challenge. We initially used Mixamo for character animations and classroom models, but finding a balance between quality and compatibility took time and effort.
+
+- **Using Blender for the First Time**  
+  Blender was completely new to us. Importing, editing, and exporting models correctly for web use proved to be a steep learning curve. Simple tasks like adjusting poses or fixing animations became time-consuming.
+
+- **Implementing WebSocket Rooms**  
+  While we were already familiar with the basic concepts of WebSockets, using them in combination with a 3D environment was a first. Creating synchronized virtual rooms that multiple users could join and interact in required careful handling of socket events and scene updates.
+
+- **MCQ Generation using Anthropic AI**  
+  In the second phase of the project, we attempted to generate MCQs using Anthropic’s AI API. Integrating the API, formatting questions correctly, and handling edge cases was more difficult than anticipated.
+
+- **Exporting Results to PDF**  
+  Downloading user results as a PDF seemed like a minor feature at first, but involved a fair bit of complexity—especially in terms of layout design, formatting, and consistent rendering across browsers.
+
+> There were several moments where we felt stuck and even considered giving up. But after pushing through all the hurdles, we’re proud to present the final product you see today.
+
 
 ## Getting Started
 
@@ -122,7 +137,8 @@ Merntix/
    ```
 3. Start the development server:
    ```
-   npm run dev
+  tsc -b
+  node dist/index.js
    ```
 
 ### Frontend Setup
@@ -171,6 +187,5 @@ Merntix/
 
 - **Frontend**: React, TypeScript, Tailwind CSS, Vite
 - **Backend**: Node.js, Express, TypeScript
-- **Metaverse**: React, Three.js, React Three Fiber
-- **Real-time Communication**: Socket.io
-- **Database**: MongoDB (via backend)
+- **Metaverse**: React, Three.js, React Three Fiber ,WebSockets
+
