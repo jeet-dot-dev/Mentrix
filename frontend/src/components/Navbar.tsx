@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, GraduationCap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Navbar = (): JSX.Element => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const location = useLocation();
   
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = (): void => setIsOpen(!isOpen);
   
-  const isActive = (path) => {
+  const isActive = (path: string): string => {
     return location.pathname === path ? 'text-primary-400 font-semibold' : 'text-gray-300 hover:text-white';
   };
 
@@ -30,15 +30,6 @@ const Navbar = () => {
             <Link to="/test" className={`${isActive('/test')} transition-colors duration-200`}>
               Test
             </Link>
-            
-            <div className="flex items-center space-x-4 ml-4">
-              <Link to="/login" className="btn btn-outline py-1.5">
-                Login
-              </Link>
-              <Link to="/signup" className="btn btn-primary py-1.5">
-                Sign Up
-              </Link>
-            </div>
           </nav>
           
           {/* Mobile menu button */}
@@ -77,20 +68,6 @@ const Navbar = () => {
               Test
             </Link>
             <div className="flex flex-col space-y-2 pt-2">
-              <Link 
-                to="/login" 
-                className="btn btn-outline py-2"
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-              <Link 
-                to="/signup" 
-                className="btn btn-primary py-2"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign Up
-              </Link>
             </div>
           </div>
         </motion.div>
@@ -99,4 +76,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar; 

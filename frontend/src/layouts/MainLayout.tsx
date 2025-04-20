@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const MainLayout = () => {
+const MainLayout = (): JSX.Element => {
   return (
     <div className="min-h-screen flex flex-col bg-background-dark">
       <Navbar />
@@ -21,4 +21,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default MainLayout; 

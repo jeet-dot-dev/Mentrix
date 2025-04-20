@@ -1,27 +1,45 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, ListChecks, ArrowRight } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
+import { generateQuestions } from '../services/api';
 
-const Test = () => {
+const Test = (): JSX.Element => {
   const navigate = useNavigate();
-  const [subject, setSubject] = useState('');
-  const [topic, setTopic] = useState('');
-  const [error, setError] = useState('');
+  const [subject, setSubject] = useState<string>('');
+  const [topic, setTopic] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     
-    if (!subject) {
-      setError('Please select a subject');
+    if (!subject.trim()) {
+      setError('Please enter a subject');
       return;
     }
     
-    // In a real app, we would send this data to the backend
-    // For now, we'll just navigate to the exam page with query params
-    navigate(`/exam?subject=${subject}&topic=${encodeURIComponent(topic)}`);
+    setIsLoading(true);
+    try {
+      // Generate questions from the backend
+      const questions = await generateQuestions(subject.trim(), topic.trim());
+      
+      // Navigate to exam page with the generated questions
+      navigate('/exam', {
+        state: {
+          questions,
+          subject: subject.trim(),
+          topic: topic.trim()
+        }
+      });
+    } catch (error) {
+      setError('Failed to generate questions. Please try again.');
+      console.error('Error generating questions:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -36,7 +54,7 @@ const Test = () => {
           Take a Test
         </h1>
         <p className="text-xl text-gray-300">
-          Select a subject and optionally specify topics you want to be tested on
+          Enter any subject and optionally specify topics you want to be tested on
         </p>
       </motion.div>
       
@@ -46,22 +64,17 @@ const Test = () => {
             <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
               Subject <span className="text-red-500">*</span>
             </label>
-            <select
+            <input
+              type="text"
               id="subject"
               value={subject}
               onChange={(e) => {
                 setSubject(e.target.value);
                 setError('');
               }}
-              className="form-input bg-gray-800"
-            >
-              <option value="">Select a subject</option>
-              <option value="mathematics">Mathematics</option>
-              <option value="science">Science</option>
-              <option value="english">English</option>
-              <option value="history">History</option>
-              <option value="computer-science">Computer Science</option>
-            </select>
+              placeholder="Enter any subject (e.g., Mathematics, Physics, History)"
+              className="form-input bg-gray-800 w-full"
+            />
             {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
           </div>
           
@@ -86,8 +99,9 @@ const Test = () => {
             className="w-full"
             icon={<ArrowRight size={18} />}
             iconPosition="right"
+            disabled={isLoading}
           >
-            Start Test
+            {isLoading ? 'Generating Questions...' : 'Start Test'}
           </Button>
         </form>
       </Card>
@@ -104,9 +118,9 @@ const Test = () => {
                 <BookOpen size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">Wide Range of Subjects</h3>
+                <h3 className="text-lg font-semibold mb-2">Any Subject</h3>
                 <p className="text-gray-400">
-                  Our test platform covers a comprehensive range of academic subjects to meet diverse learning needs.
+                  Enter any subject you want to be tested on, from academic subjects to specialized topics.
                 </p>
               </div>
             </div>
@@ -137,4 +151,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Test; 

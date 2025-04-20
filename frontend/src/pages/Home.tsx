@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { UserPlus, Users, ArrowRight, BookOpen, Clock, BarChart3, Globe, Shield } from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
+import { UserPlus, Users, ArrowRight, BookOpen, Clock, BarChart3, Globe, Shield, LucideIcon } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -14,12 +14,51 @@ const container = {
   }
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 }
 };
 
-const Home = () => {
+interface Feature {
+  title: string;
+  description: string;
+  icon: JSX.Element;
+}
+
+const features: Feature[] = [
+  {
+    title: "Customized Testing",
+    description: "Create tests based on specific subjects and topics to target the exact areas of study.",
+    icon: <BookOpen size={28} />
+  },
+  {
+    title: "Real-time Results",
+    description: "Get immediate feedback on test performance with detailed analytics and insights.",
+    icon: <Clock size={28} />
+  },
+  {
+    title: "Progress Tracking",
+    description: "Monitor improvement over time with comprehensive performance metrics and reports.",
+    icon: <BarChart3 size={28} />
+  },
+  {
+    title: "Collaborative Learning",
+    description: "Join study rooms with peers to enhance the learning experience through collaboration.",
+    icon: <Users size={28} />
+  },
+  {
+    title: "Accessible Anywhere",
+    description: "Access your educational materials from any device, anywhere in the world.",
+    icon: <Globe size={28} />
+  },
+  {
+    title: "Secure Environment",
+    description: "Your educational data is protected with industry-standard security measures.",
+    icon: <Shield size={28} />
+  }
+];
+
+const Home = (): JSX.Element => {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -38,13 +77,8 @@ const Home = () => {
             </p>
             
             <div className="flex flex-wrap sm:flex-row justify-center gap-4">
-              <Link to="/signup" className='flex justify-center'>
-                <Button className='size-22' icon={<UserPlus size={20} />}>
-                  Get Started
-                </Button>
-              </Link>
               <Link to="/test" className='flex justify-center'>
-                <Button className='size-22'variant="outline" icon={<ArrowRight size={20} />}>
+                <Button className='size-22' variant="outline" icon={<ArrowRight size={20} />}>
                   Try a Test
                 </Button>
               </Link>
@@ -139,38 +173,4 @@ const Home = () => {
   );
 };
 
-// Features data
-const features = [
-  {
-    title: "Customized Testing",
-    description: "Create tests based on specific subjects and topics to target the exact areas of study.",
-    icon: <BookOpen size={28} />
-  },
-  {
-    title: "Real-time Results",
-    description: "Get immediate feedback on test performance with detailed analytics and insights.",
-    icon: <Clock size={28} />
-  },
-  {
-    title: "Progress Tracking",
-    description: "Monitor improvement over time with comprehensive performance metrics and reports.",
-    icon: <BarChart3 size={28} />
-  },
-  {
-    title: "Collaborative Learning",
-    description: "Join study rooms with peers to enhance the learning experience through collaboration.",
-    icon: <Users size={28} />
-  },
-  {
-    title: "Accessible Anywhere",
-    description: "Access your educational materials from any device, anywhere in the world.",
-    icon: <Globe size={28} />
-  },
-  {
-    title: "Secure Environment",
-    description: "Your educational data is protected with industry-standard security measures.",
-    icon: <Shield size={28} />
-  }
-];
-
-export default Home;
+export default Home; 

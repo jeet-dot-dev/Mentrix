@@ -1,4 +1,20 @@
 import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
+
+type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface ButtonProps {
+  children: ReactNode;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+  icon?: ReactNode;
+  iconPosition?: 'left' | 'right';
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+}
 
 const Button = ({ 
   children, 
@@ -7,15 +23,17 @@ const Button = ({
   className = '', 
   icon,
   iconPosition = 'left',
-  ...props 
-}) => {
-  const sizeClasses = {
+  onClick,
+  disabled = false,
+  type = 'button'
+}: ButtonProps) => {
+  const sizeClasses: Record<ButtonSize, string> = {
     sm: 'py-1.5 px-3 text-sm',
     md: 'py-2 px-4',
     lg: 'py-2.5 px-5 text-lg',
   };
   
-  const variantClasses = {
+  const variantClasses: Record<ButtonVariant, string> = {
     primary: 'bg-primary-600 hover:bg-primary-700 text-white',
     secondary: 'bg-secondary-600 hover:bg-secondary-700 text-white',
     accent: 'bg-accent-600 hover:bg-accent-700 text-white',
@@ -33,7 +51,9 @@ const Button = ({
         ${variantClasses[variant]}
         ${className}
       `}
-      {...props}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
     >
       {icon && iconPosition === 'left' && icon}
       {children}
@@ -42,4 +62,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default Button; 
