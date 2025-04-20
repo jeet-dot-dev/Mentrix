@@ -9,9 +9,9 @@ function Home() {
   const navigate = useNavigate();
 
   const characters = [
-    { id: 'character1', name: 'Student1', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231245_tj1brw.png' },
-    { id: 'character2', name: 'Student2', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231152_s1kt1t.png' },
-    { id: 'character3', name: 'Student3', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231226_zh9ysk.png' },
+    { id: 'Student1', name: 'Student1', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231245_tj1brw.png' },
+    { id: 'Student2', name: 'Student2', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231152_s1kt1t.png' },
+    { id: 'Student3', name: 'Student3', image: 'https://res.cloudinary.com/dhdmbwnak/image/upload/v1745084597/Screenshot_2025-04-19_231226_zh9ysk.png' },
   ];
 
   const handleCreateRoom = () => {

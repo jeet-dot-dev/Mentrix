@@ -1,5 +1,6 @@
 // src/comps/EnvironmentComp.jsx
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 import {
   PerspectiveCamera,
   OrbitControls,
@@ -8,14 +9,18 @@ import {
   Text,
   Float,
   ContactShadows,
+  useGLTF,
 } from "@react-three/drei";
 import { Classroom } from "../models/Classroom";
 import { useEffect, useRef, useState, useMemo, Suspense } from "react";
-import * as THREE from "three";
 import { Student1 } from "../models/Student1";
-// Import other character models here
 import { Student2 } from "../models/Student2";
 import { Student3 } from "../models/Student3";
+import { SceneContent } from "./SceneContent ";
+import {  useFrame } from "@react-three/fiber";
+
+
+
 
 // Floating name tags above users
 const NameTag = ({ position, name }) => {
@@ -53,7 +58,10 @@ const ParticleField = () => {
 };
 
 // First person player character
-const PlayerCharacter = ({ seatPosition, isActive, character = "student1" }) => {
+
+
+// First person player character
+const PlayerCharacter = ({ seatPosition, isActive, character }) => {
   const characterRef = useRef();
   const headPosition = useMemo(() => {
     if (!seatPosition) return [0, 0, 0];
@@ -68,7 +76,8 @@ const PlayerCharacter = ({ seatPosition, isActive, character = "student1" }) => 
   return (
     <group ref={characterRef}>
       {isActive ? null : (
-        <Student1
+        <CharacterModel
+          character={character}
           position={seatPosition?.position || [0, 0, 0]}
           rotation={seatPosition?.rotation || [0, 0, 0]}
           castShadow
@@ -86,12 +95,26 @@ const PlayerCharacter = ({ seatPosition, isActive, character = "student1" }) => 
   );
 };
 
+// Character Model Component - Choose the right model based on character ID
+const CharacterModel = ({ character, position, rotation, castShadow, userId }) => {
+  switch(character) {
+    case 'Student1':
+      return <Student1 position={position} rotation={rotation} userId={userId} castShadow={castShadow} />;
+    case 'Student2':
+      return <Student2 position={position} rotation={rotation} userId={userId} castShadow={castShadow} />;
+    case 'Student3':
+      return <Student3 position={position} rotation={rotation} userId={userId} castShadow={castShadow} />;
+    default:
+      return <Student1 position={position} rotation={rotation} userId={userId} castShadow={castShadow} />;
+  }
+};
+
 // User Character Component
 const UserCharacter = ({ user, position, rotation }) => {
   // Choose the appropriate character model based on user preference
-  // This is where you would render different character models based on the character prop
   return (
-    <Student1
+    <CharacterModel
+      character={user.character}
       position={position}
       rotation={rotation}
       userId={user.id}
@@ -106,7 +129,6 @@ export default function EnvironmentComp({
   socket,
   mySeatIndex = -1,
   seatPositions = [],
-  myCharacter = "student1" // Add character prop
 }) {
   const [cameraRotation, setCameraRotation] = useState({ x: 0, y: 0 });
   const [dayTime, setDayTime] = useState(true); // For day/night cycle
@@ -163,6 +185,14 @@ export default function EnvironmentComp({
     return mySeatIndex >= 0 && seatPositions[mySeatIndex] ? seatPositions[mySeatIndex] : null;
   }, [mySeatIndex, seatPositions]);
 
+  // Find my character from users array using mySeatIndex
+  const myUser = useMemo(() => {
+    return users.find(user => user.seatIndex === mySeatIndex) || {};
+  }, [users, mySeatIndex]);
+
+  // Access the character property from myUser
+  const myCharacter = myUser.character || "Student1";
+
   return (
     <>
       <Canvas shadows className="w-full h-full">
@@ -176,6 +206,10 @@ export default function EnvironmentComp({
           firstPersonView={firstPersonView}
           mySeatPosition={mySeatPosition}
           myCharacter={myCharacter}
+          ParticleField={ParticleField}
+          UserCharacter={UserCharacter}
+          NameTag={NameTag}
+          PlayerCharacter={PlayerCharacter}
         />
       </Canvas>
 
@@ -204,139 +238,5 @@ export default function EnvironmentComp({
   );
 }
 
-// Scene content component to avoid render issues
-const SceneContent = ({ 
-  mySeatIndex, 
-  seatPositions, 
-  dayTime, 
-  users, 
-  controlsRef,
-  directionalLightRef,
-  firstPersonView,
-  mySeatPosition,
-  myCharacter
-}) => {
-  return (
-    <>
-      {/* In first-person view, we use PlayerCharacter with camera, otherwise use OrbitControls */}
-      {firstPersonView ? (
-        <PlayerCharacter 
-          seatPosition={mySeatPosition} 
-          isActive={true}
-          character={myCharacter}
-        />
-      ) : (
-        <>
-          {mySeatIndex >= 0 && seatPositions[mySeatIndex] && (
-            <PerspectiveCamera
-              makeDefault
-              position={[
-                seatPositions[mySeatIndex].position[0],
-                seatPositions[mySeatIndex].position[1] + 2,
-                seatPositions[mySeatIndex].position[2] + 2
-              ]}
-              rotation={[0, 0, 0]}
-              fov={75}
-            />
-          )}
-        </>
-      )}
-
-      <OrbitControls
-        ref={controlsRef}
-        enablePan={false}
-        enableZoom={!firstPersonView} // Disable zoom in first-person mode
-        maxPolarAngle={Math.PI - 0.2}
-        minPolarAngle={0.2}
-        maxDistance={5}
-        minDistance={0.5}
-        enabled={!firstPersonView} // Disable controls in first-person mode
-      />
-
-      {/* Lighting setup */}
-      <ambientLight
-        intensity={dayTime ? 0.5 : 0.2}
-        color={dayTime ? "white" : "#113366"}
-      />
-      <directionalLight
-        ref={directionalLightRef}
-        position={[5, 10, 5]}
-        intensity={dayTime ? 1 : 0.2}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
-      <pointLight
-        position={[0, 3, 0]}
-        intensity={dayTime ? 0.5 : 1}
-        color={dayTime ? "white" : "#5588ff"}
-      />
-
-      {/* Environment preset for better lighting */}
-      <Environment preset={dayTime ? "city" : "night"} background={false} />
-
-      <Suspense fallback={null}>
-        {/* Classroom environment */}
-        <Classroom
-          position={[0, 0, 0]}
-          rotation={[0, Math.PI, 0]}
-          castShadow
-          receiveShadow
-        />
-
-        {/* Floor shadow for better grounding */}
-        <ContactShadows
-          position={[0, -0.01, 0]}
-          opacity={0.6}
-          scale={15}
-          blur={1}
-          far={5}
-          resolution={256}
-          color={dayTime ? "#000000" : "#001122"}
-        />
-
-        {/* Ambient particles */}
-        {dayTime && <ParticleField />}
-
-        {/* Render all users in their seats */}
-        {users.map(
-          (user) =>
-            user && user.seatIndex !== undefined &&
-            seatPositions[user.seatIndex] && 
-            user.seatIndex !== mySeatIndex && ( // Don't render the current user in third-person
-              <group key={user.id || `user-${user.seatIndex}`}>
-                <UserCharacter
-                  user={user}
-                  position={seatPositions[user.seatIndex].position}
-                  rotation={seatPositions[user.seatIndex].rotation}
-                />
-                <NameTag
-                  position={seatPositions[user.seatIndex].position}
-                  name={user.name || `User ${user.seatIndex + 1}`}
-                />
-              </group>
-            )
-        )}
-        
-        {/* Render the current user only in third-person view */}
-        {!firstPersonView && mySeatIndex >= 0 && seatPositions[mySeatIndex] && (
-          <group>
-            {/* Use the selected character model */}
-            <UserCharacter
-              user={{ id: "self", character: myCharacter }}
-              position={seatPositions[mySeatIndex].position}
-              rotation={seatPositions[mySeatIndex].rotation}
-            />
-            <NameTag
-              position={seatPositions[mySeatIndex].position}
-              name="You"
-            />
-          </group>
-        )}
-      </Suspense>
-    </>
-  );
-};
+// Export the shared components for use in SceneContent
+export { NameTag, ParticleField, UserCharacter, CharacterModel,PlayerCharacter };
