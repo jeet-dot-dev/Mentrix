@@ -1,10 +1,18 @@
-# Mentrix
-Mentrix is a futuristic Metaverse Classroom platform where users can create and join immersive 3D rooms for collaborative learning experiences. Designed for the next generation of education.
+# Merntix
+Merntix is a futuristic Metaverse Classroom platform where users can create and join immersive 3D rooms for collaborative learning experiences. Designed for the next generation of education.
+
+## What Problems Does It Solve
+
+- **Immersive Learning Environment**: Transforms traditional online education into an engaging 3D experience, increasing student attention and participation
+- **Experiential Education**: Allows students to experience the future of education through virtual classroom interactions
+- **Interactive Assessment**: Provides a dynamic environment for mock tests and assessments that surpass traditional online quiz formats
+- **Distance Learning Barriers**: Breaks down geographical barriers while maintaining a sense of physical presence and community
+- **Student Engagement**: Combats online learning fatigue through gamified educational experiences
 
 ## Project Structure
 
 ```
-Mentrix/
+Merntix/
 ├── .git/                    # Git repository
 ├── .gitignore               # Git ignore file
 ├── README.md                # Project documentation
@@ -92,6 +100,14 @@ Mentrix/
 - Character customization
 - Day/night cycle
 - RESTful API for user management and room creation
+
+## Challenges We Ran Into
+
+- **3D Development Learning Curve**: Three.js presented a significant learning curve for our team, with seemingly simple operations like object rotation requiring extensive research and trial-and-error
+- **Performance Optimization**: Balancing visual fidelity with performance across different devices proved challenging
+- **Feature Scope Management**: We initially planned advanced features like WebRTC video calling and AI-powered teaching assistants, but had to scale back to focus on core functionality
+- **Character Animation**: Implementing realistic sitting postures and basic animations required complex rigging and transformation work
+- **Real-time Synchronization**: Ensuring consistent experiences across all users in the same virtual space required careful implementation of socket events
 
 ## Getting Started
 
