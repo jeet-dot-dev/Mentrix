@@ -1,4 +1,4 @@
-# Merntix
+# Merntix (shortlisted for the offline round of Hack4Bengal Hackathon)
 Merntix is a futuristic Metaverse Classroom platform where users can create and join immersive 3D rooms for collaborative learning experiences. Designed for the next generation of education.
 
 ## What Problems Does It Solve
